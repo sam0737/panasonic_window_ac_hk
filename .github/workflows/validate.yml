@@ -17,6 +17,9 @@ jobs:
         uses: hacs/action@main
         with:
           category: integration
+          # Brand assets live in the home-assistant/brands repo (added separately
+          # when/if this goes to core); custom-repo installs work without them.
+          ignore: brands
 
   hassfest:
     name: Hassfest
