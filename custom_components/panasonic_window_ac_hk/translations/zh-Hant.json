@@ -1,0 +1,30 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Panasonic 窗口式冷氣機（香港 / 澳門）",
+        "description": "適用於香港及澳門發售的 Panasonic 窗口式 / 嵌牆式冷氣機（CW-HU、CW-HZ、CW-SU 及 CW-SUL 系列）。本整合以逆向工程方式製作，並已在 CW-HU70ZA 上驗證；使用相同紅外線遙控器的其他型號應該也能運作，但並不保證涵蓋全球所有 CW-* 型號。請選擇用來發送指令的紅外線發射器（例如 Broadlink 發射器）。",
+        "data": {
+          "name": "名稱",
+          "emitter": "紅外線發射器"
+        },
+        "data_description": {
+          "name": "此冷氣機的名稱（例如所在的房間）。",
+          "emitter": "用來發送紅外線訊號的 infrared.* 實體。"
+        }
+      }
+    },
+    "abort": {
+      "no_emitters": "找不到紅外線發射器。請先新增紅外線發射裝置（例如 ESPHome 紅外線代理或受支援的 Broadlink 裝置），然後再試一次。"
+    }
+  },
+  "entity": {
+    "button": {
+      "quiet": { "name": "靜音" },
+      "powerful": { "name": "強力" }
+    },
+    "switch": {
+      "nanoex": { "name": "nanoeX" }
+    }
+  }
+}

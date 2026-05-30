@@ -1,0 +1,30 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Panasonic Window-Type Air Conditioner (Hong Kong / Macau)",
+        "description": "For Panasonic window / through-the-wall air conditioners sold in Hong Kong and Macau (CW-HU, CW-HZ, CW-SU and CW-SUL series). Reverse-engineered and verified on a CW-HU70ZA; other models that use the same IR remote should work, but this does not claim to cover every CW-* model worldwide. Choose the infrared emitter (e.g. a Broadlink blaster) that should send the commands.",
+        "data": {
+          "name": "Name",
+          "emitter": "Infrared emitter"
+        },
+        "data_description": {
+          "name": "A friendly name for this air conditioner (e.g. the room it is in).",
+          "emitter": "The infrared.* entity that will transmit the IR codes."
+        }
+      }
+    },
+    "abort": {
+      "no_emitters": "No infrared emitters were found. Add an infrared blaster (e.g. an ESPHome IR proxy or a supported Broadlink device) first, then try again."
+    }
+  },
+  "entity": {
+    "button": {
+      "quiet": { "name": "Quiet" },
+      "powerful": { "name": "Powerful" }
+    },
+    "switch": {
+      "nanoex": { "name": "nanoeX" }
+    }
+  }
+}
