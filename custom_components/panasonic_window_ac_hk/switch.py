@@ -12,6 +12,7 @@ from typing import Any
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity, RestoredExtraData
 
 from . import PanasonicWindowAcHKConfigEntry
 from .device import PanasonicWindowAcHK
@@ -26,7 +27,7 @@ async def async_setup_entry(
     async_add_entities([PanasonicWindowAcHKNanoexSwitch(entry.runtime_data)])
 
 
-class PanasonicWindowAcHKNanoexSwitch(SwitchEntity):
+class PanasonicWindowAcHKNanoexSwitch(SwitchEntity, RestoreEntity):
     """Toggle nanoeX by re-sending the full state frame."""
 
     _attr_has_entity_name = True
@@ -39,6 +40,18 @@ class PanasonicWindowAcHKNanoexSwitch(SwitchEntity):
         self._device = device
         self._attr_unique_id = f"{device.entry_id}_nanoex"
         self._attr_device_info = device.device_info
+
+    @property
+    def extra_restore_state_data(self) -> RestoredExtraData:
+        """Snapshot nanoeX so it survives a restart."""
+        return RestoredExtraData({"nanoex": self._device.nanoex})
+
+    async def async_added_to_hass(self) -> None:
+        """Restore the last nanoeX state (without re-transmitting IR)."""
+        await super().async_added_to_hass()
+        if (data := await self.async_get_last_extra_data()) is None:
+            return
+        self._device.nanoex = data.as_dict()["nanoex"]
 
     @property
     def is_on(self) -> bool:

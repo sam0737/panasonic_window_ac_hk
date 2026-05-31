@@ -12,6 +12,7 @@ from homeassistant.components.climate import (
 from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity, RestoredExtraData
 
 from . import PanasonicWindowAcHKConfigEntry
 from .const import FAN_MODES, SWING_MODES
@@ -37,7 +38,7 @@ async def async_setup_entry(
     async_add_entities([PanasonicWindowAcHKClimate(entry.runtime_data)])
 
 
-class PanasonicWindowAcHKClimate(ClimateEntity):
+class PanasonicWindowAcHKClimate(ClimateEntity, RestoreEntity):
     """Optimistic climate control for one A/C (IR is one-way)."""
 
     _attr_has_entity_name = True
@@ -70,6 +71,32 @@ class PanasonicWindowAcHKClimate(ClimateEntity):
         self._device = device
         self._attr_unique_id = f"{device.entry_id}_climate"
         self._attr_device_info = device.device_info
+
+    @property
+    def extra_restore_state_data(self) -> RestoredExtraData:
+        """Snapshot the assumed state so it survives a restart."""
+        device = self._device
+        return RestoredExtraData(
+            {
+                "power": device.power,
+                "mode": device.mode,
+                "temp": device.temp,
+                "fan": device.fan,
+                "swing": device.swing,
+            }
+        )
+
+    async def async_added_to_hass(self) -> None:
+        """Restore the last assumed state (without re-transmitting IR)."""
+        await super().async_added_to_hass()
+        if (data := await self.async_get_last_extra_data()) is None:
+            return
+        restored = data.as_dict()
+        self._device.power = restored["power"]
+        self._device.mode = restored["mode"]
+        self._device.temp = restored["temp"]
+        self._device.fan = restored["fan"]
+        self._device.swing = restored["swing"]
 
     @property
     def hvac_mode(self) -> HVACMode:
